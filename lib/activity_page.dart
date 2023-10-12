@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart'; // Import the flutter_gauges package
+
 class Speedometer extends StatelessWidget {
   final double speed;
 
@@ -6,71 +8,20 @@ class Speedometer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 200,
-        height: 200,
-        child: Stack(
-          children: [
-            // Outer circle (Speedometer background)
-            Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey,
-              ),
-            ),
-            // Colored arc to represent the speed
-            CustomPaint(
-              size: Size(200, 200),
-              painter: SpeedometerPainter(speed),
-            ),
-            // Current speed text
-            Center(
-              child: Text(
-                speed.toStringAsFixed(1),
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SpeedometerPainter extends CustomPainter {
-  final double speed;
-
-  SpeedometerPainter(this.speed);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final double strokeWidth = 20;
-    final Paint paint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth;
-
-    final double center = size.width / 2;
-    final double radius = center - strokeWidth / 2;
-
-    final startAngle = -3.14 / 4;
-    final sweepAngle = 3.14 / 2 * (speed / 100); // Assuming speed ranges from 0 to 100
-
-    canvas.drawArc(
-      Rect.fromCircle(center: Offset(center, center), radius: radius),
-      startAngle,
-      sweepAngle,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return SfRadialGauge(axes: <RadialAxis>[
+      RadialAxis(minimum: 0, maximum: 150, ranges: <GaugeRange>[
+        GaugeRange(startValue: 0, endValue: 50, color: Colors.blueGrey),
+        GaugeRange(startValue: 50, endValue: 100, color: Colors.blue),
+        GaugeRange(startValue: 100, endValue: 150, color: Colors.blueAccent)
+      ], pointers: <GaugePointer>[
+        NeedlePointer(value: speed)
+      ], annotations: <GaugeAnnotation>[
+        GaugeAnnotation(
+            widget: Container(child: Text('')),
+            angle: speed,
+            positionFactor: speed)
+      ])
+    ]);
   }
 }
 
@@ -89,7 +40,7 @@ class ActivitySummaryPage extends StatefulWidget {
     required this.duration,
     required this.averageSpeed,
     required this.totalDistance,
-    this.startTime,   // Initialize startTime as an optional parameter
+    this.startTime, // Initialize startTime as an optional parameter
     this.endTime,
   });
 
@@ -98,7 +49,6 @@ class ActivitySummaryPage extends StatefulWidget {
 }
 
 class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,81 +66,108 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                 margin: EdgeInsets.all(16),
                 child: Container(
                   width: 340, // Set the desired width
-                  height: 105, // Set the desired height
+                  height: 250, // Set the desired height
                   child: Padding(
                     padding: EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Center(
-                          child: Text(
-                            'Activity Type',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 5 ,),
-                        Divider(
-                          thickness: 2,
-                          color: Colors.redAccent,
-                        ),
-                        SizedBox(height: 5 ,),
-                        Center(
-                          child: Text(
-                            widget.activityType,
-                            style: TextStyle(fontSize: 18),
-                          ),
-                        ),
+                          child: Container(
+                    child: SfLinearGauge(
+                      ranges: [
+                      LinearGaugeRange(
+                      startValue: 35,
+                      endValue: 35,
+                    ),
                       ],
+                  markerPointers: [
+                  LinearShapePointer(
+                  value: 35,
+                  ),
+                    ],
+                    barPointers: [LinearBarPointer(value: 100,color: Colors.red,thickness: 10,),],
+          ),
+                        ),
+                        ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(children: [
+                        Text('  28 bpm',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                        SizedBox(width: 180,),
+                        Text('  58 bpm',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),)
+                      ],),
+                        Row(children: [
+                          Text('  min',style: TextStyle(fontSize: 15,),),
+                          SizedBox(width: 210,),
+                          Text('max',style: TextStyle(fontSize: 15,),)
+                        ],),
+                        Row(children: [
+                         Container(
+                           height:125,
+                             width: 100,
+                             child: Image.network('https://static.vecteezy.com/system/resources/previews/000/599/773/non_2x/heart-beat-wave-logo-line-vector.jpg',fit: BoxFit.cover,)),
+                          SizedBox(width: 10,),
+                          Text('35',style: TextStyle(fontSize: 60,fontWeight: FontWeight.bold),),
+                          SizedBox(width: 5,),
+                          Text('bpm',style: TextStyle(fontSize: 60,color: Colors.grey),)
+                        ],),
+                      ]
                     ),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(2.0),
                 child: Row(
                   children: [
-                    Card(
-                      color: Color(0xffd4f0f7),
-                      elevation: 20,
-                      margin: EdgeInsets.all(16),
-                      child: Container(
-                        width: 140, // Set the desired width
-                        height: 200, // Set the desired height
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: Text(
-                                  'Avg Speed',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                    Center(
+                      child: Card(
+                        color: Color(0xffd4f0f7),
+                        elevation: 20,
+                        margin: EdgeInsets.all(16),
+                        child: Container(
+                          width: 140, // Set the desired width
+                          height: 200, // Set the desired height
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Text(
+                                    'Avg Speed',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 40 ,),
-                              Divider(
-                                thickness: 2,
-                                color: Colors.green,
-                              ),
-                              SizedBox(height: 40 ,),
-                              Center(
-                                child: Text(
-                                  '${widget.averageSpeed.toStringAsFixed(2)} m/s',
-                                  style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),
+                                SizedBox(
+                                  height: 40,
                                 ),
-                              ),
-                            ],
+                                Divider(
+                                  thickness: 2,
+                                  color: Colors.green,
+                                ),
+                                SizedBox(
+                                  height: 40,
+                                ),
+                                Center(
+                                  child: Text(
+                                    '${widget.averageSpeed.toStringAsFixed(2)} m/s',
+                                    style: TextStyle(
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-
                     Card(
                       color: Color(0xfff6dae4),
                       elevation: 20,
@@ -212,16 +189,22 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 40 ,),
+                              SizedBox(
+                                height: 40,
+                              ),
                               Divider(
                                 thickness: 2,
                                 color: Color(0xffff9999),
                               ),
-                              SizedBox(height: 40 ,),
+                              SizedBox(
+                                height: 40,
+                              ),
                               Center(
                                 child: Text(
                                   '${widget.totalDistance.toStringAsFixed(2)} km',
-                                  style: TextStyle(fontSize:25,fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],
@@ -229,10 +212,8 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
-
               ),
               Column(
                 children: [
@@ -256,7 +237,9 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 5  ,),
+                            SizedBox(
+                              height: 5,
+                            ),
                             Center(
                               child: Text(
                                 '${(widget.duration / 60).toStringAsFixed(2)} minutes',
@@ -292,7 +275,9 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 5  ,),
+                            SizedBox(
+                              height: 5,
+                            ),
                             Center(
                               child: Text(
                                 '${widget.speed.toStringAsFixed(2)} m/s',
