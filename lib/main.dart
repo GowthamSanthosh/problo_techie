@@ -229,6 +229,8 @@ class _GoogleMapsPageState extends State<GoogleMapsPage> {
               ),
               SizedBox(height: 10,),
               Speedometer(speed: _currentLocation?.speed ?? 0.0),
+              Text('Speed',style: TextStyle(fontSize: 20),),
+              SizedBox(height: 10,),
               Text(
                 '${_currentLocation?.speed?.toStringAsFixed(2) ?? '0.0'} m/s',
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),

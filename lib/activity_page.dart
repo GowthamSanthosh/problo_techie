@@ -49,12 +49,26 @@ class ActivitySummaryPage extends StatefulWidget {
 }
 
 class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
+  bool isDataCollectionEnabled = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff9457eb),
         title: Text('Data Location'),
+        actions: [
+          Switch(
+            activeColor: Colors.green,
+            value: isDataCollectionEnabled, // Use a boolean variable to track the state
+            onChanged: (value) {
+              // Handle the switch state change
+              setState(() {
+                isDataCollectionEnabled = value;
+                // Add your logic here to enable or disable data collection
+              });
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -182,7 +196,7 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                             children: [
                               Center(
                                 child: Text(
-                                  'Total Distance',
+                                  'Avg Heart Beat',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -201,7 +215,7 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                               ),
                               Center(
                                 child: Text(
-                                  '${widget.totalDistance.toStringAsFixed(2)} km',
+                                  '32 bpm',
                                   style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold),
@@ -268,7 +282,7 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                           children: [
                             Center(
                               child: Text(
-                                'Speed',
+                                'Total Distance',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -280,7 +294,7 @@ class _ActivitySummaryPageState extends State<ActivitySummaryPage> {
                             ),
                             Center(
                               child: Text(
-                                '${widget.speed.toStringAsFixed(2)} m/s',
+                                '${widget.totalDistance.toStringAsFixed(2)} m/s',
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
